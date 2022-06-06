@@ -8,6 +8,7 @@ import CustomDatePicker from "../CustomDatePicker/CustomDatePicker";
 import CloseIcon from "@mui/icons-material/Close";
 import PayerDialog from "../PayerDialog/PayerDialog";
 import SplitDialog from "../SplitDialog/SplitDialog";
+import CustomMultipleInput from "../CustomMultipleInput/CustomMultipleInput";
 
 const style = {
   position: "absolute",
@@ -110,6 +111,7 @@ export default function AddExpenseDialog({
               onChange={(e) => setName(e.target.value)}
             />
           </div>
+          <CustomMultipleInput names={["nodejs", "html"]} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <TextField
               label="Description"
