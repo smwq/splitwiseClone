@@ -24,9 +24,9 @@ export default function CustomBar({ handleaddExpenseDialogOpen, type, title }) {
               <Button
                 sx={{
                   textTransform: "none",
-                  bgcolor: "#FF652F",
                   margin: "0px 2px",
                 }}
+                color="primary"
                 variant="contained"
                 onClick={handleaddExpenseDialogOpen}
               >
@@ -35,9 +35,9 @@ export default function CustomBar({ handleaddExpenseDialogOpen, type, title }) {
               <Button
                 sx={{
                   textTransform: "none",
-                  bgcolor: "#5BC5A7",
                   margin: "0px 2px",
                 }}
+                color="primary"
                 variant="contained"
               >
                 Settle up

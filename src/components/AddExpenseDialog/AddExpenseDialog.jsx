@@ -84,7 +84,7 @@ export default function AddExpenseDialog({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <AppBar position="static" sx={{ bgcolor: "#5BC5A7" }}>
+          <AppBar position="static" color="primary">
             <Toolbar>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Add an expense
@@ -93,6 +93,7 @@ export default function AddExpenseDialog({
                 sx={{ textTransform: "none" }}
                 variant="text"
                 onClick={handleExpenseDialogClose}
+                color="secondary"
               >
                 <CloseIcon />
               </Button>
@@ -165,7 +166,8 @@ export default function AddExpenseDialog({
               Cancel
             </Button>
             <Button
-              sx={{ textTransform: "none", bgcolor: "#5BC5A7", margin: 1 }}
+              sx={{ textTransform: "none", margin: 1 }}
+              color="primary"
               variant="contained"
               onClick={handleSave}
             >

@@ -54,7 +54,7 @@ export default function PayerDialog({
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <AppBar position="static" sx={{ bgcolor: "#5BC5A7" }}>
+        <AppBar position="static" color="primary">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Choose Payer
@@ -63,6 +63,7 @@ export default function PayerDialog({
               sx={{ textTransform: "none" }}
               variant="text"
               onClick={handlePayerDialogClose}
+              color="secondary"
             >
               <CloseIcon />
             </Button>

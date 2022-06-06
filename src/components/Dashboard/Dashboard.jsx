@@ -65,9 +65,12 @@ export default function Dashboard({ expenses }) {
         >
           <Typography variant="h6">YOU OWE</Typography>
           {expenses.length
-            ? expenses.map((expense) => {
+            ? expenses.map((expense, index) => {
                 return expense.owed ? (
-                  <Card sx={{ width: "95%", display: "flex", margin: 1 }}>
+                  <Card
+                    key={index}
+                    sx={{ width: "95%", display: "flex", margin: 1 }}
+                  >
                     <CardHeader
                       avatar={
                         <Avatar sx={{ bgcolor: "#D6ECDC" }} aria-label="recipe">
