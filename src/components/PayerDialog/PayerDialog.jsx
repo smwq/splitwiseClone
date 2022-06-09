@@ -34,15 +34,15 @@ export default function PayerDialog({
   handlePayerDialogClose,
   handlePaidBy,
 }) {
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState("you");
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
 
-  const handlePayer = (e, index) => {
+  const handlePayer = (e, name) => {
     handlePaidBy(e.target.innerText);
-    handleListItemClick(e, index);
+    handleListItemClick(e, name);
     handlePayerDialogClose();
   };
 
@@ -75,28 +75,25 @@ export default function PayerDialog({
             flexDirection: "column",
           }}
         >
+          <ListItemButton
+            sx={{ width: "100%", textAlign: "center" }}
+            key={Math.random()}
+            selected={selectedIndex === "you"}
+            onClick={(e) => handlePayer(e, "you")}
+          >
+            <ListItemText>You</ListItemText>
+          </ListItemButton>
           {friends.map((friend, index) => (
             <ListItemButton
               sx={{ width: "100%", textAlign: "center" }}
               key={index}
-              selected={selectedIndex === index}
-              onClick={(e) => handlePayer(e, index)}
+              selected={selectedIndex === friend.name}
+              onClick={(e) => handlePayer(e, friend.name)}
             >
               <ListItemText>{friend.name}</ListItemText>
             </ListItemButton>
           ))}
         </List>
-        {/* <div style={{ display: "flex", flexDirection: "column" }}>
-          {friends.map((friend, index) => (
-            <Button
-              sx={{ textTransform: "none" }}
-              key={index}
-              onClick={handlePayer}
-            >
-              {friend.name}
-            </Button>
-          ))}
-        </div> */}
       </Box>
     </Modal>
   );

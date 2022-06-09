@@ -9,10 +9,106 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import HailIcon from "@mui/icons-material/Hail";
 
-export default function Dashboard({ expenses }) {
+export default function Dashboard({ expenses, friends }) {
+  const oweDetailsCalculation = (name) => {
+    let oweDetails = [];
+
+    oweDetails = [
+      ...oweDetails,
+      ...expenses
+        .filter((expense) => {
+          return expense.paidBy === name;
+        })
+        .map((item) => item.sharingDetails["you"]["owedOrGetAmount"]),
+    ];
+
+    return oweDetails.reduce(
+      (previousValue, currentValue) =>
+        parseInt(previousValue) +
+        parseInt(currentValue === "" ? "0" : currentValue),
+      0
+    );
+  };
+
+  const totalOweDetailsCalculation = () => {
+    let oweDetails = [];
+
+    friends.forEach((friend) => {
+      oweDetails = [
+        ...oweDetails,
+        ...expenses
+          .filter((expense) => {
+            return expense.paidBy === friend.name;
+          })
+          .map((item) => item.sharingDetails["you"]["owedOrGetAmount"]),
+      ];
+    });
+
+    let total = oweDetails.reduce(
+      (previousValue, currentValue) =>
+        parseInt(previousValue) +
+        parseInt(currentValue === "" ? "0" : currentValue),
+      0
+    );
+
+    return total;
+  };
+
+  const owedDetailsCalculation = (name) => {
+    let oweDetails = [];
+
+    oweDetails = [
+      ...oweDetails,
+      ...expenses
+        .filter((expense) => {
+          return expense.paidBy === "you";
+        })
+        .map((item) =>
+          item.sharingDetails[name]
+            ? item.sharingDetails[name]["owedOrGetAmount"]
+            : 0
+        ),
+    ];
+
+    return oweDetails.reduce(
+      (previousValue, currentValue) =>
+        parseInt(previousValue) +
+        parseInt(currentValue === "" ? "0" : currentValue),
+      0
+    );
+  };
+
+  const totalOwedDetailsCalculation = () => {
+    let oweDetails = [];
+
+    friends.forEach((friend) => {
+      oweDetails = [
+        ...oweDetails,
+        ...expenses
+          .filter((expense) => {
+            return expense.paidBy === "you";
+          })
+          .map((item) =>
+            item.sharingDetails[friend.name]
+              ? item.sharingDetails[friend.name]["owedOrGetAmount"]
+              : 0
+          ),
+      ];
+    });
+
+    let total = oweDetails.reduce(
+      (previousValue, currentValue) =>
+        parseInt(previousValue) +
+        parseInt(currentValue === "" ? "0" : currentValue),
+      0
+    );
+
+    return total;
+  };
+
   return (
     <div>
       <Divider />
@@ -30,7 +126,9 @@ export default function Dashboard({ expenses }) {
           }}
         >
           <ListItemText>total balance</ListItemText>
-          <ListItemText>300</ListItemText>
+          <ListItemText>
+            {totalOwedDetailsCalculation() - totalOweDetailsCalculation()}
+          </ListItemText>
         </ListItem>
         <ListItem
           sx={{
@@ -41,7 +139,7 @@ export default function Dashboard({ expenses }) {
           }}
         >
           <ListItemText>you owe</ListItemText>
-          <ListItemText>300</ListItemText>
+          <ListItemText>{totalOweDetailsCalculation()}</ListItemText>
         </ListItem>
         <ListItem
           sx={{
@@ -51,7 +149,7 @@ export default function Dashboard({ expenses }) {
           }}
         >
           <ListItemText>you owed</ListItemText>
-          <ListItemText>300</ListItemText>
+          <ListItemText>{totalOwedDetailsCalculation()}</ListItemText>
         </ListItem>
       </List>
       <Divider />
@@ -64,44 +162,37 @@ export default function Dashboard({ expenses }) {
           }}
         >
           <Typography variant="h6">YOU OWE</Typography>
-          {expenses.length
-            ? expenses.map((expense, index) => {
-                return expense.owed ? (
-                  <Card
-                    key={index}
-                    sx={{ width: "95%", display: "flex", margin: 1 }}
-                  >
-                    <CardHeader
-                      avatar={
-                        <Avatar sx={{ bgcolor: "#D6ECDC" }} aria-label="recipe">
-                          <HailIcon />
-                        </Avatar>
-                      }
-                    />
-                    <CardContent
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <Typography variant="h6" gutterBottom>
-                        {expense.addedBy}
-                      </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{ color: expense.owed ? "red" : "green" }}
-                      >
-                        You owe &#8377;
-                        {expense.owedOrGetAmount}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  ""
-                );
-              })
-            : ""}
+          {friends.map((friend, index) => {
+            return (
+              <Card
+                key={index}
+                sx={{ width: "95%", display: "flex", margin: 1 }}
+              >
+                <CardHeader
+                  avatar={
+                    <Avatar sx={{ bgcolor: "#D6ECDC" }} aria-label="recipe">
+                      <HailIcon />
+                    </Avatar>
+                  }
+                />
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    {friend.name}
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ color: "red" }}>
+                    You owe &#8377;
+                    {oweDetailsCalculation(friend.name)}
+                  </Typography>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
         <Divider orientation="vertical" flexItem />
         <div
@@ -112,41 +203,37 @@ export default function Dashboard({ expenses }) {
           }}
         >
           <Typography variant="h6">YOU ARE OWED</Typography>
-          {expenses.length
-            ? expenses.map((expense) => {
-                return !expense.owed ? (
-                  <Card sx={{ width: "95%", display: "flex", margin: 1 }}>
-                    <CardHeader
-                      avatar={
-                        <Avatar sx={{ bgcolor: "#D6ECDC" }} aria-label="recipe">
-                          <HailIcon />
-                        </Avatar>
-                      }
-                    />
-                    <CardContent
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                      }}
-                    >
-                      <Typography variant="h6" gutterBottom>
-                        {expense.addedBy}
-                      </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{ color: expense.owed ? "red" : "green" }}
-                      >
-                        owes you &#8377;
-                        {expense.owedOrGetAmount}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  ""
-                );
-              })
-            : ""}
+          {friends.map((friend, index) => {
+            return (
+              <Card
+                key={index}
+                sx={{ width: "95%", display: "flex", margin: 1 }}
+              >
+                <CardHeader
+                  avatar={
+                    <Avatar sx={{ bgcolor: "#D6ECDC" }} aria-label="recipe">
+                      <HailIcon />
+                    </Avatar>
+                  }
+                />
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography variant="h6" gutterBottom>
+                    {friend.name}
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ color: "green" }}>
+                    You are owed &#8377;
+                    {owedDetailsCalculation(friend.name)}
+                  </Typography>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>

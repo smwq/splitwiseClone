@@ -25,7 +25,7 @@ export default function Activity() {
   const handleaddExpenseDialogClose = () => setAddExpenseDialogIsOpen(false);
 
   const [friends, setFriends] = React.useState([
-    { name: "smwq" },
+    { name: "aman" },
     { name: "ankit" },
   ]);
 
@@ -33,11 +33,41 @@ export default function Activity() {
     {
       description: "water bill",
       amount: "1000",
-      owedOrGetAmount: "500",
-      owed: true,
-      friendName: "ankit",
-      addedBy: "ankit",
       paidBy: "ankit",
+      addedBy: "ankit",
+      sharingDetails: {
+        you: { owedOrGetAmount: "300" },
+        aman: { owedOrGetAmount: "300" },
+        ankit: { owedOrGetAmount: "400" },
+      },
+    },
+    {
+      description: "maid",
+      amount: "1500",
+      paidBy: "ankit",
+      addedBy: "ankit",
+      // sharedWith: ["you", "aman"],
+      // splitAmount: [500, 500],
+      // owed: [true, true],
+      sharingDetails: {
+        you: { owedOrGetAmount: "500" },
+        aman: { owedOrGetAmount: "500" },
+        ankit: { owedOrGetAmount: "500" },
+      },
+    },
+    {
+      description: "electricity",
+      amount: "1800",
+      paidBy: "you",
+      addedBy: "you",
+      sharedWith: ["ankit", "aman"],
+      splitAmount: [600, 600],
+      owed: [true, true],
+      sharingDetails: {
+        you: { owedOrGetAmount: "600" },
+        ankit: { owedOrGetAmount: "600" },
+        aman: { owedOrGetAmount: "600" },
+      },
     },
   ]);
 
@@ -76,7 +106,7 @@ export default function Activity() {
               {selectedIndex ? (
                 <RecentActivity expenses={expenses} />
               ) : (
-                <Dashboard expenses={expenses} />
+                <Dashboard expenses={expenses} friends={friends} />
               )}
             </div>
           </Item>

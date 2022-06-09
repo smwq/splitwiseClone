@@ -36,12 +36,11 @@ export default function AddExpenseDialog({
   const handleSplitDialogOpen = () => setSplitDialogIsOpen(true);
   const handleSplitDialogClose = () => setSplitDialogIsOpen(false);
 
-  // const [name, setName] = React.useState("");
   const fixedOptions = [];
   const [names, setNames] = React.useState([...fixedOptions]);
   const [description, setDescription] = React.useState("");
   const [amount, setAmount] = React.useState("");
-  const [paidBy, setPaidBy] = React.useState("smwq");
+  const [paidBy, setPaidBy] = React.useState("you");
 
   const [expenseError, setExpenseError] = React.useState({
     description: false,
@@ -61,15 +60,26 @@ export default function AddExpenseDialog({
   };
 
   const handleSave = () => {
-    handleAddExpense({
+    let expense = {
       description: description,
       amount: amount,
-      owedOrGetAmount: paidBy === "smwq" ? splitValues[1] : splitValues[0],
-      owed: paidBy === "smwq" ? false : true,
-      friendName: [...names.map((name) => name.name)],
-      addedBy: "you",
       paidBy: paidBy,
+      addedBy: "you",
+      sharingDetails: {
+        // you: { owed: true, owedOrGetAmount: "500", friendName: "you" },
+        // aman: { owed: true, owedOrGetAmount: "500", friendName: "aman" },
+      },
+    };
+
+    expense.sharingDetails["you"] = { owedOrGetAmount: splitValues[0] };
+
+    names.forEach((name, index) => {
+      expense.sharingDetails[name.name] = {
+        owedOrGetAmount: splitValues[index + 1],
+      };
     });
+
+    handleAddExpense(expense);
     handleExpenseDialogClose();
   };
 
@@ -77,7 +87,7 @@ export default function AddExpenseDialog({
     handleaddExpenseDialogClose();
     setDescription("");
     setAmount("");
-    setPaidBy("smwq");
+    setPaidBy("you");
     setSplitValues([...initialState]);
     setExpenseError({ description: false, amount: false });
   };
@@ -131,12 +141,6 @@ export default function AddExpenseDialog({
             >
               With you and:
             </Typography>
-            {/* <TextField
-              label="Enter names"
-              variant="standard"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            /> */}
             <Autocomplete
               multiple
               options={friends}
@@ -194,7 +198,7 @@ export default function AddExpenseDialog({
                 sx={{ borderRadius: 80, border: "1px dashed grey" }}
                 onClick={handlePayerDialogOpen}
               >
-                {paidBy === "smwq" ? "you" : paidBy}
+                {paidBy}
               </Button>{" "}
               and split{" "}
               <Button
@@ -241,6 +245,7 @@ export default function AddExpenseDialog({
       />
       <SplitDialog
         friends={friends}
+        names={names}
         splitDialogIsOpen={splitDialogIsOpen}
         handleSplitDialogClose={handleSplitDialogClose}
         splitValues={splitValues}

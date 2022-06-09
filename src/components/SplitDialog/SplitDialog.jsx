@@ -30,16 +30,26 @@ const style = {
 
 export default function SplitDialog({
   friends,
+  names,
   splitDialogIsOpen,
   handleSplitDialogClose,
   splitValues,
   handleSplitValue,
 }) {
+  const [splitFields, setSplitFields] = React.useState([
+    "you",
+    ...names.map((name) => name.name),
+  ]);
+
   const [error, setError] = React.useState([
     ...splitValues.map((value) => false),
   ]);
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    setSplitFields(["you", ...names.map((name) => name.name)]);
+  }, [names]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
@@ -143,7 +153,7 @@ export default function SplitDialog({
           <Button>Three</Button>
         </ButtonGroup>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          {friends.map((friend, index) => (
+          {splitFields.map((name, index) => (
             <div
               key={index}
               style={{
@@ -153,7 +163,7 @@ export default function SplitDialog({
               }}
             >
               <Typography variant="body1" sx={{ color: "black" }}>
-                {friend.name}
+                {name}
               </Typography>
               <TextField
                 type="number"

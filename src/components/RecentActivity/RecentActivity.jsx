@@ -9,11 +9,27 @@ import React from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 export default function RecentActivity({ expenses }) {
+  const getCalculation = (sharingDetails) => {
+    let sum = 0;
+
+    for (const property in sharingDetails) {
+      if (property !== "you") {
+        sum += parseInt(sharingDetails[property]["owedOrGetAmount"]);
+      }
+    }
+
+    return sum;
+  };
+
+  const oweCalculation = (sharingDetails) => {
+    return parseInt(sharingDetails["you"]["owedOrGetAmount"]);
+  };
+
   return (
     <div>
       {expenses.length ? (
-        expenses.map((expense) => (
-          <Card sx={{ minWidth: 275, display: "flex" }}>
+        expenses.map((expense, index) => (
+          <Card sx={{ minWidth: 275, display: "flex" }} key={index}>
             <CardHeader
               avatar={
                 <Avatar sx={{ bgcolor: "#D6ECDC" }} aria-label="recipe">
@@ -33,10 +49,12 @@ export default function RecentActivity({ expenses }) {
               </Typography>
               <Typography
                 variant="subtitle1"
-                sx={{ color: expense.owed ? "red" : "green" }}
+                sx={{ color: expense.paidBy === "you" ? "green" : "red" }}
               >
-                {`You ${expense.owed ? "owe" : "get"}`} &#8377;
-                {expense.owedOrGetAmount}
+                {`You ${expense.paidBy === "you" ? "get" : "owe"}`} &#8377;
+                {expense.paidBy === "you"
+                  ? getCalculation(expense.sharingDetails)
+                  : oweCalculation(expense.sharingDetails)}
               </Typography>
             </CardContent>
           </Card>
