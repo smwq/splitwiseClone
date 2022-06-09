@@ -35,10 +35,31 @@ export default function SplitDialog({
   splitValues,
   handleSplitValue,
 }) {
+  const [error, setError] = React.useState([
+    ...splitValues.map((value) => false),
+  ]);
+
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
+  };
+
+  const handleSplitFieldChange = (e, index) => {
+    if (!parseInt(e.target.value) || parseInt(e.target.value) < 0) {
+      setError((prevError) => [
+        ...prevError.map((error, i) => {
+          return i === index ? true : error;
+        }),
+      ]);
+    } else {
+      setError((prevError) => [
+        ...prevError.map((error, i) => {
+          return i === index ? false : error;
+        }),
+      ]);
+    }
+    handleSplitValue(e.target.value, index);
   };
 
   return (
@@ -136,10 +157,13 @@ export default function SplitDialog({
               </Typography>
               <TextField
                 type="number"
+                required
+                error={error[index]}
+                helperText={error[index] ? "Enter positive numbers" : ""}
                 sx={{ width: 100 }}
                 variant="standard"
                 value={splitValues[index]}
-                onChange={(e) => handleSplitValue(e.target.value, index)}
+                onChange={(e) => handleSplitFieldChange(e, index)}
               />
             </div>
           ))}

@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { AppBar, TextField, Toolbar } from "@mui/material";
+import { AppBar, Autocomplete, TextField, Toolbar } from "@mui/material";
 import CustomDatePicker from "../CustomDatePicker/CustomDatePicker";
 import CloseIcon from "@mui/icons-material/Close";
 import PayerDialog from "../PayerDialog/PayerDialog";
@@ -36,13 +36,19 @@ export default function AddExpenseDialog({
   const handleSplitDialogOpen = () => setSplitDialogIsOpen(true);
   const handleSplitDialogClose = () => setSplitDialogIsOpen(false);
 
-  const [name, setName] = React.useState("");
+  // const [name, setName] = React.useState("");
+  const fixedOptions = [];
+  const [names, setNames] = React.useState([...fixedOptions]);
   const [description, setDescription] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [paidBy, setPaidBy] = React.useState("smwq");
 
-  const initialState = friends.map((friend) => "");
+  const [expenseError, setExpenseError] = React.useState({
+    description: false,
+    amount: false,
+  });
 
+  const initialState = friends.map((friend) => "");
   const [splitValues, setSplitValues] = React.useState([...initialState]);
 
   const handleSplitValue = (value, index) => {
@@ -60,7 +66,7 @@ export default function AddExpenseDialog({
       amount: amount,
       owedOrGetAmount: paidBy === "smwq" ? splitValues[1] : splitValues[0],
       owed: paidBy === "smwq" ? false : true,
-      friendName: name,
+      friendName: [...names.map((name) => name.name)],
       addedBy: "you",
       paidBy: paidBy,
     });
@@ -69,11 +75,29 @@ export default function AddExpenseDialog({
 
   const handleExpenseDialogClose = () => {
     handleaddExpenseDialogClose();
-    setName("");
     setDescription("");
     setAmount("");
     setPaidBy("smwq");
     setSplitValues([...initialState]);
+    setExpenseError({ description: false, amount: false });
+  };
+
+  const handleChange = (e, target) => {
+    if (target === "description") {
+      if (!e.target.value) {
+        setExpenseError((prevError) => ({ ...prevError, description: true }));
+      } else {
+        setExpenseError((prevError) => ({ ...prevError, description: false }));
+      }
+      setDescription(e.target.value);
+    } else if (target === "amount") {
+      if (!parseInt(e.target.value) || parseInt(e.target.value) < 0) {
+        setExpenseError((prevError) => ({ ...prevError, amount: true }));
+      } else {
+        setExpenseError((prevError) => ({ ...prevError, amount: false }));
+      }
+      setAmount(e.target.value);
+    }
   };
 
   return (
@@ -100,35 +124,66 @@ export default function AddExpenseDialog({
               </Button>
             </Toolbar>
           </AppBar>
-          <div style={{ display: "flex" }}>
-            <Typography variant="body1" sx={{ color: "black" }}>
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <Typography
+              variant="body1"
+              sx={{ color: "black", alignSelf: "center" }}
+            >
               With you and:
             </Typography>
-            <TextField
+            {/* <TextField
               label="Enter names"
               variant="standard"
               value={name}
               onChange={(e) => setName(e.target.value)}
+            /> */}
+            <Autocomplete
+              multiple
+              options={friends}
+              value={names}
+              onChange={(event, newValue) => {
+                setNames([
+                  ...fixedOptions,
+                  ...newValue.filter(
+                    (option) => fixedOptions.indexOf(option) === -1
+                  ),
+                ]);
+              }}
+              getOptionLabel={(option) => option.name}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  label="Names"
+                  placeholder="Enter Names"
+                />
+              )}
+              sx={{ width: "65%" }}
             />
           </div>
-          <CustomMultipleInput names={["nodejs", "html"]} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <TextField
+              required
+              error={expenseError["description"]}
+              helperText={expenseError["description"] ? "Required" : ""}
               label="Description"
               placeholder="Enter a description"
               variant="standard"
               sx={{ margin: "2px 6px" }}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => handleChange(e, "description")}
             />
             <TextField
+              required
+              error={expenseError["amount"]}
+              helperText={expenseError["amount"] ? "Enter positive number" : ""}
               type="number"
               label="Amount"
               placeholder="0.00"
               variant="standard"
               sx={{ margin: "2px 6px" }}
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => handleChange(e, "amount")}
             />
             <Typography
               variant="body1"

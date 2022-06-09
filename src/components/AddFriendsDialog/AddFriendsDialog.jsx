@@ -27,16 +27,23 @@ export default function AddFriendsDialog({
   const [name, setName] = React.useState("");
   const [error, setError] = React.useState(false);
 
-  const handleNameChange = (e) => setName(e.target.value);
-
-  const handleAddFriendName = () => {
-    if (!name) {
+  const handleNameChange = (e) => {
+    if (!e.target.value) {
       setError(true);
     } else {
       setError(false);
-      handleAddFriend(name);
-      handleaddFriendsDialogClose();
     }
+    setName(e.target.value);
+  };
+
+  const handleAddFriendName = () => {
+    handleAddFriend(name);
+    handleClose();
+  };
+
+  const handleClose = () => {
+    handleaddFriendsDialogClose();
+    setError(false);
   };
 
   return (
@@ -56,7 +63,8 @@ export default function AddFriendsDialog({
               <Button
                 sx={{ textTransform: "none" }}
                 variant="text"
-                onClick={handleaddFriendsDialogClose}
+                onClick={handleClose}
+                color="secondary"
               >
                 <CloseIcon />
               </Button>
