@@ -9,6 +9,7 @@ import AddExpenseDialog from "../AddExpenseDialog/AddExpenseDialog";
 import ImageList from "../ImageList/ImageList";
 import RecentActivity from "../RecentActivity/RecentActivity";
 import Dashboard from "../Dashboard/Dashboard";
+import { expensesList, friendsList } from "../../data";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,52 +25,9 @@ export default function Activity() {
   const handleaddExpenseDialogOpen = () => setAddExpenseDialogIsOpen(true);
   const handleaddExpenseDialogClose = () => setAddExpenseDialogIsOpen(false);
 
-  const [friends, setFriends] = React.useState([
-    { name: "aman" },
-    { name: "ankit" },
-  ]);
+  const [friends, setFriends] = React.useState([...friendsList]);
 
-  const [expenses, setExpenses] = React.useState([
-    {
-      description: "water bill",
-      amount: "1000",
-      paidBy: "ankit",
-      addedBy: "ankit",
-      sharingDetails: {
-        you: { owedOrGetAmount: "300" },
-        aman: { owedOrGetAmount: "300" },
-        ankit: { owedOrGetAmount: "400" },
-      },
-    },
-    {
-      description: "maid",
-      amount: "1500",
-      paidBy: "ankit",
-      addedBy: "ankit",
-      // sharedWith: ["you", "aman"],
-      // splitAmount: [500, 500],
-      // owed: [true, true],
-      sharingDetails: {
-        you: { owedOrGetAmount: "500" },
-        aman: { owedOrGetAmount: "500" },
-        ankit: { owedOrGetAmount: "500" },
-      },
-    },
-    {
-      description: "electricity",
-      amount: "1800",
-      paidBy: "you",
-      addedBy: "you",
-      sharedWith: ["ankit", "aman"],
-      splitAmount: [600, 600],
-      owed: [true, true],
-      sharingDetails: {
-        you: { owedOrGetAmount: "600" },
-        ankit: { owedOrGetAmount: "600" },
-        aman: { owedOrGetAmount: "600" },
-      },
-    },
-  ]);
+  const [expenses, setExpenses] = React.useState([...expensesList]);
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
