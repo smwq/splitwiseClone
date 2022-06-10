@@ -14,7 +14,11 @@ export default function RecentActivity({ expenses }) {
 
     for (const property in sharingDetails) {
       if (property !== "you") {
-        sum += parseInt(sharingDetails[property]["owedOrGetAmount"]);
+        sum += parseInt(
+          sharingDetails[property]["owedOrGetAmount"] === ""
+            ? "0"
+            : sharingDetails[property]["owedOrGetAmount"]
+        );
       }
     }
 
@@ -22,7 +26,11 @@ export default function RecentActivity({ expenses }) {
   };
 
   const oweCalculation = (sharingDetails) => {
-    return parseInt(sharingDetails["you"]["owedOrGetAmount"]);
+    return parseInt(
+      sharingDetails["you"]["owedOrGetAmount"] === ""
+        ? "0"
+        : sharingDetails["you"]["owedOrGetAmount"]
+    );
   };
 
   return (

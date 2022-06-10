@@ -65,10 +65,7 @@ export default function AddExpenseDialog({
       amount: amount,
       paidBy: paidBy,
       addedBy: "you",
-      sharingDetails: {
-        // you: { owed: true, owedOrGetAmount: "500", friendName: "you" },
-        // aman: { owed: true, owedOrGetAmount: "500", friendName: "aman" },
-      },
+      sharingDetails: {},
     };
 
     expense.sharingDetails["you"] = { owedOrGetAmount: splitValues[0] };
@@ -79,12 +76,20 @@ export default function AddExpenseDialog({
       };
     });
 
-    handleAddExpense(expense);
-    handleExpenseDialogClose();
+    if (
+      description &&
+      amount &&
+      !expenseError.description &&
+      !expenseError.amount
+    ) {
+      handleAddExpense(expense);
+      handleExpenseDialogClose();
+    }
   };
 
   const handleExpenseDialogClose = () => {
     handleaddExpenseDialogClose();
+    setNames([...fixedOptions]);
     setDescription("");
     setAmount("");
     setPaidBy("you");
