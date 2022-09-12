@@ -12,7 +12,8 @@ export default function CustomAppBar({ mode, setMode }) {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="primary">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h5">Splitwise</Typography>
+          <Typography variant="h5">FitterzSpace</Typography>
+          <Typography variant="h6">Under Development</Typography>
           {/* <Button color="secondary">Login</Button> */}
           <SettingsMenu mode={mode} setMode={setMode} />
         </Toolbar>

@@ -14,7 +14,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <CustomAppBar mode={mode} setMode={setMode} />
-        <Activity />
+        {/* <Activity /> */}
       </div>
     </ThemeProvider>
   );
